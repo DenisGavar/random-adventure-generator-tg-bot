@@ -15,6 +15,10 @@ app = Flask(__name__)
 application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 application.add_handler(categories_handler)
 
+def setup_webhook():
+    webhook_url = f"{WEBHOOK_URL}/{TELEGRAM_BOT_TOKEN}"
+    application.bot.set_webhook(url=webhook_url)
+
 @app.route(f"/{TELEGRAM_BOT_TOKEN}", methods=["POST"])
 def webhook():
     json_update = request.get_json()
@@ -22,10 +26,6 @@ def webhook():
     application.update_queue().put(update)
     return "OK", 200
 
-@app.before_first_request
-def setup_webhook():
-    webhook_url = f"{WEBHOOK_URL}/{TELEGRAM_BOT_TOKEN}"
-    application.bot.set_webhook(url=webhook_url)
-
 if __name__ == "__main__":
+    setup_webhook()
     app.run(port=PORT)
