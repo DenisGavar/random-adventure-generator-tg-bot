@@ -23,7 +23,7 @@ def setup_webhook():
 def webhook():
     json_update = request.get_json()
     update = Update.de_json(json_update, application.bot)
-    application.update_queue().put(update)
+    application.update_queue.put(update)
     return "OK", 200
 
 if __name__ == "__main__":
