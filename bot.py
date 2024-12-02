@@ -20,10 +20,10 @@ def setup_webhook():
     application.bot.set_webhook(url=webhook_url)
 
 @app.route(f"/{TELEGRAM_BOT_TOKEN}", methods=["POST"])
-def webhook():
+async def webhook():
     json_update = request.get_json()
     update = Update.de_json(json_update, application.bot)
-    application.update_queue.put(update)
+    await application.update_queue.put(update)
     return "OK", 200
 
 if __name__ == "__main__":
