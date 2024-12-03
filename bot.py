@@ -25,7 +25,7 @@ def set_webhook():
         return "Webhook setup failed.", 500
 
 @app.route(f"/{TELEGRAM_BOT_TOKEN}", methods=["POST"])
-async def webhook():
+def webhook():
     json_update = request.get_json()
     update = Update.de_json(json_update, application.bot)
     application.update_queue.put_nowait(update)
