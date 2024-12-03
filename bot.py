@@ -27,9 +27,13 @@ def set_webhook():
 @app.route(f"/{TELEGRAM_BOT_TOKEN}", methods=["POST"])
 def webhook():
     json_update = request.get_json()
-    update = Update.de_json(json_update, application.bot)
-    application.update_queue.put_nowait(update)
-    return "OK", 200
+    try:
+        update = Update.de_json(json_update, application.bot)
+        application.update_queue.put_nowait(update)
+        return "OK", 200
+    except Exception as e:
+        print(f"Error handling update: {e}")
+        return "Internal Server Error", 500
 
 if __name__ == "__main__":
     app.run(port=PORT)
