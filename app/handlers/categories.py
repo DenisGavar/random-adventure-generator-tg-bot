@@ -1,8 +1,8 @@
 from telegram import Update
-from telegram.ext import ContextTypes, CommandHandler
+from telegram.ext import CallbackContext, CommandHandler
 from app.services.api_service import fetch_categories
 
-async def categories(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def categories(update: Update, context: CallbackContext):
     categories = fetch_categories()
     if categories:
         message = "\n".join([f"- {category['name']}" for category in categories])
