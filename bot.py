@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request
-from telegram import Update, Bot
+from telegram import Update
 from telegram.ext import Application
 from app.handlers.categories import categories_handler
 
@@ -15,17 +15,21 @@ app = Flask(__name__)
 application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 application.add_handler(categories_handler)
 
-def setup_webhook():
+@app.route('/setwebhook', methods=['GET'])
+def set_webhook():
     webhook_url = f"{WEBHOOK_URL}/{TELEGRAM_BOT_TOKEN}"
-    application.bot.set_webhook(url=webhook_url)
+    s = application.bot.set_webhook(url=webhook_url)
+    if s:
+        return "Webhook setup successful!"
+    else:
+        return "Webhook setup failed.", 500
 
 @app.route(f"/{TELEGRAM_BOT_TOKEN}", methods=["POST"])
 async def webhook():
     json_update = request.get_json()
     update = Update.de_json(json_update, application.bot)
-    await application.update_queue.put(update)
+    application.update_queue.put_nowait(update)
     return "OK", 200
 
 if __name__ == "__main__":
-    setup_webhook()
     app.run(port=PORT)
