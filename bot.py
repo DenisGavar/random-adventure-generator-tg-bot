@@ -7,6 +7,7 @@ from telegram import Update
 from telegram.ext import Application
 from app.handlers.categories import categories_handler
 from app.handlers.start import start_handler
+from app.handlers.generate import generate_handler
 
 load_dotenv(override=True)
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -27,6 +28,7 @@ application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 # Add handlers to the application
 application.add_handler(categories_handler)
 application.add_handler(start_handler)
+application.add_handler(generate_handler)
 
 # Initialize the Application properly
 @app.before_serving

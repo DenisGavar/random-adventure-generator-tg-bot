@@ -22,3 +22,12 @@ def register_user(data):
     except requests.exceptions.RequestException as e:
         print(f"API error: {e}")
         return None
+
+def generate_task(data):
+    try:
+        response = requests.post(f"{API_BASE_URL}/tasks/generate", json={key: value for key, value in data.items() if value is not None})
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"API error: {e}")
+        return None
