@@ -1,8 +1,8 @@
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
-from app.services.api_service import generate_new_task
+from app.services.api_service import get_existing_task
 
-async def generate_task(update: Update, context: CallbackContext):
+async def get_task(update: Update, context: CallbackContext):
     user = update.effective_user
 
     task_data = {}
@@ -13,7 +13,7 @@ async def generate_task(update: Update, context: CallbackContext):
     user_input = ' '.join(context.args)
     task_data["category"] = user_input.strip() if user_input else None
     
-    task = generate_new_task(task_data)
+    task = get_existing_task(task_data)
 
     if task:
         response = f"Your task in category '{task['category']}' is:\n\n{task['description']}"
@@ -23,4 +23,4 @@ async def generate_task(update: Update, context: CallbackContext):
     await update.message.reply_text(response)
 
 
-generate_task_handler = CommandHandler("generate_task", generate_task)
+get_task_handler = CommandHandler("get_task", get_task)
