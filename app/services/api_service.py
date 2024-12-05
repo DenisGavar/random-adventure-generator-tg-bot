@@ -7,7 +7,8 @@ API_BASE_URL = os.getenv("API_BASE_URL")
 
 def fetch_categories():
     try:
-        response = requests.get(f"{API_BASE_URL}/categories")
+        url = f"{API_BASE_URL}/categories"
+        response = requests.get(url)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -16,7 +17,9 @@ def fetch_categories():
     
 def register_user(data):
     try:
-        response = requests.post(f"{API_BASE_URL}/users", json={key: value for key, value in data.items() if value is not None})
+        url = f"{API_BASE_URL}/users"
+        body = {key: value for key, value in data.items() if value is not None}
+        response = requests.post(url, json = body)
         response.raise_for_status()
         return response
     except requests.exceptions.RequestException as e:
@@ -25,7 +28,9 @@ def register_user(data):
 
 def generate_new_task(data):
     try:
-        response = requests.post(f"{API_BASE_URL}/tasks/generate", json={key: value for key, value in data.items() if value is not None})
+        url = f"{API_BASE_URL}/tasks/generate"
+        body = {key: value for key, value in data.items() if value is not None}
+        response = requests.post(url, json = body)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -34,7 +39,32 @@ def generate_new_task(data):
     
 def get_existing_task(data):
     try:
-        response = requests.post(f"{API_BASE_URL}/tasks/get", json={key: value for key, value in data.items() if value is not None})
+        url = f"{API_BASE_URL}/tasks/get"
+        body = {key: value for key, value in data.items() if value is not None}
+        response = requests.post(url, json = body)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"API error: {e}")
+        return None
+    
+def fetch_tasks(data):
+    try:
+        url = f"{API_BASE_URL}/users/{data.get('telegram_id')}/tasks"
+        if data['status']:
+            url += f"?status={data.get('status')}"
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"API error: {e}")
+        return None
+
+def complete_user_task(data):
+    try:
+        url = f"{API_BASE_URL}/tasks/{data.get('task_id')}/complete"
+        body = {key: value for key, value in data.items() if key != 'task_id' and value is not None}
+        response = requests.post(url, json = body)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
