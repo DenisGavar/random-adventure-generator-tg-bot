@@ -13,10 +13,12 @@ async def generate_task(update: Update, context: CallbackContext):
     user_input = ' '.join(context.args)
     task_data["category"] = user_input.strip() if user_input else None
     
-    task = generate_new_task(task_data)
+    task, error_message = generate_new_task(task_data)
 
     if task:
         response = f"Your task in category '{task['category']}' is:\n\n{task['description']}"
+    elif error_message:
+        response = error_message
     else:
         response = "Something went wrong"
     

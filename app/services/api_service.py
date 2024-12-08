@@ -32,10 +32,18 @@ def generate_new_task(data):
         body = {key: value for key, value in data.items() if value is not None}
         response = requests.post(url, json = body)
         response.raise_for_status()
-        return response.json()
+        return response.json(), None
+    except requests.exceptions.HTTPError as e:
+        if response.status_code == 429:
+            error_response = response.json()
+            error_message = f"{error_response.get('message')}\nYour limit: {error_response.get('limit')}"
+            return None, error_message
+        else:
+            print(f"HTTP error: {e}")
     except requests.exceptions.RequestException as e:
         print(f"API error: {e}")
-        return None
+    
+    return None, "Something went wrong. Please try again later."
     
 def get_existing_task(data):
     try:
