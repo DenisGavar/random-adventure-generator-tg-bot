@@ -16,10 +16,12 @@ async def start(update: Update, context: CallbackContext):
     if user.last_name:
         user_data["last_name"] = user.last_name
     
-    user = register_user(user_data)
+    user, error_message  = register_user(user_data)
 
     if user:
         response = "You have been successfully registered!"
+    elif error_message:
+        response = error_message
     else:
         response = "Registration failed. Please try again later."
     
